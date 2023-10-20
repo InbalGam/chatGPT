@@ -13,7 +13,8 @@ fs.createReadStream("./data.csv")
   )
   .on("data", function (row) {
     // This will push the object row into the array
-    row.keywords = row.keywords.split(','); 
+    row.keywords = row.keywords.split(',');
+    row.keywords = row.keywords.map(word => word.trim().toLowerCase()); 
     data.push(row);
   })
   .on("error", function (error) {

@@ -51,7 +51,7 @@ app.post('/', async (req, res) => {
         const faqs = [];
         for (let i = 0; i < data.length; i++) {
             console.log(data[i].keywords);
-            if (userKeywords.some(r=> data[i].keywords.includes(r))) {
+            if (userKeywords.some(r=> data[i].keywords.includes(r.trim().toLowerCase()))) {
                 faqs.push(data[i].faq);
             }         
         };
