@@ -20,6 +20,15 @@ app.use(cors(
 
 app.use(express.json());
 
+function compare( a, b ) {
+    if ( a.wordsAmount > b.wordsAmount ){
+      return -1;
+    }
+    if ( a.wordsAmount < b.wordsAmount ){
+      return 1;
+    }
+    return 0;
+};
 
 app.get('/', async (req, res) => {
     res.status(200).send({msg: 'hello'});
@@ -49,20 +58,38 @@ app.post('/', async (req, res) => {
         console.log(userKeywords);        
 
         const faqs = [];
+        // generic- without looking for most common keywords
+        // for (let i = 0; i < data.length; i++) {
+        //     console.log(data[i].keywords);
+        //     if (userKeywords.some(r=> data[i].keywords.includes(r.trim().toLowerCase()))) {
+        //         faqs.push(data[i].faq);
+        //     }         
+        // };
+        let sameWordsAmount = 0;
         for (let i = 0; i < data.length; i++) {
             console.log(data[i].keywords);
-            if (userKeywords.some(r=> data[i].keywords.includes(r.trim().toLowerCase()))) {
-                faqs.push(data[i].faq);
-            }         
+            for (let j = 0; j < userKeywords.length; j++) {
+                sameWordsAmount += data[i].keywords.map(word => {
+                    if (word === userKeywords[j]) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+            }
+            faqs.push({faq: data[i].faq, wordsAmount: sameWordsAmount});
+            sameWordsAmount = 0;  
         };
+        faqs.sort(compare);
         console.log(faqs);
+        console.log(faqs.slice(0,2));
 
         const response = await openai.chat.completions.create({
             model: "gpt-4",
             messages: [
                 {
                     "role": "user",
-                    "content": `based on this information ${faqs}
+                    "content": `based on this information ${faqs.map(q => q.faq)}
                     answer this question ${prompt}`
                 }
             ],
