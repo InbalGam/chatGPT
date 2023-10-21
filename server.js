@@ -37,7 +37,6 @@ app.get('/', async (req, res) => {
 app.post('/', async (req, res) => {
     try {
         const prompt = req.body.prompt;
-        console.log(prompt);
         const getQKeywords = await openai.chat.completions.create({
             model: "gpt-4",
             messages: [
@@ -53,7 +52,6 @@ app.post('/', async (req, res) => {
             presence_penalty: 0,
         });
 
-        console.log(getQKeywords.choices[0].message.content);
         const userKeywords = getQKeywords.choices[0].message.content.split(',');
         console.log(userKeywords);        
 
@@ -67,10 +65,9 @@ app.post('/', async (req, res) => {
         // };
         let sameWordsAmount = 0;
         for (let i = 0; i < data.length; i++) {
-            console.log(data[i].keywords);
             for (let j = 0; j < userKeywords.length; j++) {
                 sameWordsAmount += data[i].keywords.map(word => {
-                    if (word === userKeywords[j]) {
+                    if (word === userKeywords[j].trim().toLowerCase()) {
                     return 1;
                 } else {
                     return 0;
@@ -82,14 +79,14 @@ app.post('/', async (req, res) => {
         };
         faqs.sort(compare);
         console.log(faqs);
-        console.log(faqs.slice(0,2));
+        console.log(faqs.slice(0,3));
 
         const response = await openai.chat.completions.create({
             model: "gpt-4",
             messages: [
                 {
                     "role": "user",
-                    "content": `based on this information ${faqs.map(q => q.faq)}
+                    "content": `based on this information ${faqs.slice(0,3).map(q => q.faq)}
                     answer this question ${prompt}`
                 }
             ],
