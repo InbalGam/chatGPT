@@ -87,7 +87,6 @@ const handleSubmit = async (e) => {
     // messageDiv.innerHTML = "..."
     loader(messageDiv)
 
-    console.log(data);
     const response = await fetch(`${baseURL}/`, {
         method: 'POST',
         credentials: 'include',

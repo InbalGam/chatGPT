@@ -52,17 +52,9 @@ app.post('/', async (req, res) => {
             presence_penalty: 0,
         });
 
-        const userKeywords = getQKeywords.choices[0].message.content.split(',');
-        console.log(userKeywords);        
+        const userKeywords = getQKeywords.choices[0].message.content.split(',');       
 
         const faqs = [];
-        // generic- without looking for most common keywords
-        // for (let i = 0; i < data.length; i++) {
-        //     console.log(data[i].keywords);
-        //     if (userKeywords.some(r=> data[i].keywords.includes(r.trim().toLowerCase()))) {
-        //         faqs.push(data[i].faq);
-        //     }         
-        // };
         let sameWordsAmount = 0;
         for (let i = 0; i < data.length; i++) {
             for (let j = 0; j < userKeywords.length; j++) {
@@ -78,8 +70,7 @@ app.post('/', async (req, res) => {
             sameWordsAmount = 0;  
         };
         faqs.sort(compare);
-        console.log(faqs);
-        console.log(faqs.slice(0,3));
+
 
         const response = await openai.chat.completions.create({
             model: "gpt-4",
