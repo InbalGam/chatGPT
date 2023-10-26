@@ -1,9 +1,9 @@
-import express from 'express';
+const express = require('express');
 const app = express();
-import cors from 'cors';
-import dotenv from "dotenv";
-import OpenAI from "openai";
-import data from './readCSV.js';
+const cors = require('cors');
+const dotenv = require("dotenv");
+const OpenAI = require("openai");
+const data = require('./readCSV.js');
 
 dotenv.config();
 
@@ -30,11 +30,11 @@ function compare( a, b ) {
     return 0;
 };
 
-app.get('/', async (req, res) => {
+app.get('/chat/', async (req, res) => {
     res.status(200).send({msg: 'hello'});
 });
 
-app.post('/', async (req, res) => {
+app.post('/chat/', async (req, res) => {
     try {
         const prompt = req.body.prompt;
         const getQKeywords = await openai.chat.completions.create({

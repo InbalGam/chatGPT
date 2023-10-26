@@ -1,5 +1,5 @@
-import fs from "fs";
-import { parse } from "csv-parse";
+const fs =require("fs");
+const { parse } = require("csv-parse");
 
 const data = [];
 
@@ -27,4 +27,4 @@ fs.createReadStream("./data.csv")
 //   }
 //);
 
-export default data;
+module.exports = data;
